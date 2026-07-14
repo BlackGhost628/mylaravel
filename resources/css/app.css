@@ -1,0 +1,610 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== تمام استایل‌های قبلی ===== */
+body {
+  direction: rtl;
+  font-family: "Vazir", sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #FFFFFF;
+  color: #000000;
+  line-height: 1.8;
+}
+
+* {
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+/* ===== هدر ===== */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 50px;
+  background-color: #FF385C;
+  color: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  position: relative;
+}
+
+.site-header .logo {
+  position: absolute;
+  left: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.site-header .logo img {
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+  border-radius: 50%;
+  border: 2px solid #FF385C;
+  background-color: white;
+}
+
+/* ===== منوی اصلی ===== */
+.main-menu ul {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+.main-menu li a {
+  text-decoration: none;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+
+.main-menu li a.active,
+.main-menu li a:hover {
+  background-color: rgba(255,255,255,0.2);
+}
+
+/* ===== دکمه‌های Material ===== */
+.btn-component {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+  color: white;
+}
+
+.btn-component:hover {
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  background: #0d6efd;
+}
+
+.btn-success {
+  background: #198754;
+}
+
+.btn-danger {
+  background: #dc3545;
+}
+
+.btn-warning {
+  background: #ffc107;
+  color: black;
+}
+
+/* ===== محصولات ===== */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin-top: 30px;
+}
+
+.product-card {
+  text-align: center;
+}
+
+.product-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.product-card h3 {
+  margin: 8px 0 4px;
+}
+
+.product-card .price {
+  display: block;
+  margin: 10px 0;
+  font-weight: 700;
+  color: #FF385C;
+}
+
+/* ===== ستاره‌های امتیاز ===== */
+.product-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+  direction: ltr;
+}
+
+.rating .star-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.rating .star {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: #bdbdbd;
+  stroke-width: 1.6;
+}
+
+.rating .star-btn.filled .star {
+  fill: #f1c40f;
+  stroke: #f39c12;
+}
+
+/* ===== دکمه لایک ===== */
+.like-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #999;
+  transition: color 0.2s, transform 0.2s;
+  padding: 4px;
+}
+
+.like-btn.liked {
+  color: #e74c3c;
+  transform: scale(1.2);
+}
+
+.product-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+/* ===== کارت‌ها ===== */
+.md-card {
+  border-radius: 18px;
+  padding: 20px;
+  background-color: #FFFFFF;
+}
+
+.md-card-filled {
+  background-color: #F5F5F5;
+}
+
+.md-card-outlined {
+  background-color: #FFFFFF;
+  border: 1px solid #CCCCCC;
+}
+
+.md-card-elevated {
+  background-color: #FFFFFF;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 6px 10px rgba(0,0,0,0.16);
+}
+
+.md-card-hover:hover {
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  transform: translateY(-2px);
+}
+
+/* ===== دکمه‌های MD ===== */
+.md-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.md-btn.md-filled {
+  background-color: #FF385C;
+  color: white;
+}
+
+.md-btn.md-outlined {
+  background: transparent;
+  color: #FF385C;
+  border: 2px solid #CCCCCC;
+}
+
+.md-btn.md-tonal {
+  background-color: #F5F5F5;
+  color: #000000;
+}
+
+.md-btn.md-text {
+  background: transparent;
+  color: #FF385C;
+}
+
+.md-btn.md-sm { padding: 6px 14px; font-size: 0.8rem; }
+.md-btn.md-md { padding: 8px 22px; font-size: 1rem; }
+.md-btn.md-lg { padding: 12px 28px; font-size: 1rem; }
+.md-btn.md-round { border-radius: 999px; }
+
+.md-btn.md-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== فوتر ===== */
+.site-footer {
+  background-color: #2D2D2D;
+  color: white;
+  text-align: center;
+  padding: 16px;
+  margin-top: 40px;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+}
+
+/* ===== فرم‌ها ===== */
+form {
+  background: #F5F5F5;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 90%;
+  margin: 30px auto;
+}
+
+form label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 600;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border: 1px solid #CCCCCC;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: white;
+  color: #000000;
+  box-sizing: border-box;
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* ===== جدول سبد خرید ===== */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.md-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.md-table thead {
+  background-color: #F5F5F5;
+}
+
+.md-table th,
+.md-table td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #CCCCCC;
+}
+
+.md-table th {
+  font-weight: 700;
+  color: #FF385C;
+}
+
+.md-table .thumb {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* ===== تیم ===== */
+.team-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 35px;
+  margin-top: 40px;
+}
+
+.member-card {
+  width: 230px;
+  text-align: center;
+  background: #F5F5F5;
+  border-radius: 18px;
+  padding: 25px 15px;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.member-card:hover {
+  transform: translateY(-7px);
+}
+
+.member-card img {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid #FF385C;
+  margin-bottom: 12px;
+}
+
+.member-card h3 {
+  font-size: 18px;
+  color: #FF385C;
+  margin: 8px 0 4px;
+}
+
+.member-card p {
+  font-size: 14px;
+  margin: 0;
+}
+
+/* ===== Cart Badge ===== */
+.cart-badge {
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 8px;
+  font-size: 12px;
+  margin-right: 5px;
+  display: inline-block;
+}
+
+/* ===== منوی کاربر ===== */
+.user-menu {
+  position: relative;
+  display: inline-block;
+}
+
+.user-menu .dropdown-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.user-menu .dropdown-toggle:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.user-menu .dropdown-menu {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 45px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  min-width: 200px;
+  padding: 8px 0;
+  z-index: 1000;
+}
+
+.user-menu .dropdown-menu.show {
+  display: block;
+}
+
+.user-menu .dropdown-menu a,
+.user-menu .dropdown-menu button {
+  display: block;
+  width: 100%;
+  text-align: right;
+  padding: 10px 20px;
+  color: #1f2937;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.user-menu .dropdown-menu a:hover,
+.user-menu .dropdown-menu button:hover {
+  background: #f3f4f6;
+}
+
+.user-menu .dropdown-menu .divider {
+  border-top: 1px solid #e5e7eb;
+  margin: 8px 0;
+}
+
+.user-menu .dropdown-menu .user-info {
+  padding: 10px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.user-menu .dropdown-menu .user-info strong {
+  display: block;
+  color: #FF385C;
+}
+
+.user-menu .dropdown-menu .user-info small {
+  color: #6b7280;
+}
+
+/* ===== تم تاریک ===== */
+.dark {
+  --md-sys-color-primary: #FF385C;
+  --md-sys-color-on-primary: #FFFFFF;
+  --md-sys-color-background: #121212;
+  --md-sys-color-on-background: #F2F2F2;
+  --md-sys-color-surface: #181818;
+  --md-sys-color-on-surface: #FFFFFF;
+  --md-sys-color-surface-container: #1E1E1E;
+  --md-sys-color-outline: #333333;
+}
+
+.dark body {
+  background: #121212;
+  color: #F2F2F2;
+}
+
+.dark .md-card {
+  background-color: #1E1E1E;
+  color: #FFFFFF;
+}
+
+.dark .md-card-filled {
+  background-color: #232323;
+}
+
+.dark .md-card-elevated {
+  background-color: #1E1E1E;
+}
+
+.dark form {
+  background: #232323;
+  color: #FFFFFF;
+}
+
+.dark input, .dark textarea {
+  background: #181818;
+  color: #FFFFFF;
+  border-color: #333333;
+}
+
+.dark .md-table thead {
+  background-color: #232323;
+}
+
+.dark .member-card {
+  background: #1E1E1E;
+  color: #FFFFFF;
+}
+
+.dark .md-table th,
+.dark .md-table td {
+  border-bottom-color: #333333;
+}
+
+.dark .user-menu .dropdown-menu {
+  background: #1E1E1E;
+}
+
+.dark .user-menu .dropdown-menu a,
+.dark .user-menu .dropdown-menu button {
+  color: #FFFFFF;
+}
+
+.dark .user-menu .dropdown-menu a:hover,
+.dark .user-menu .dropdown-menu button:hover {
+  background: #2D2D2D;
+}
+
+.dark .user-menu .dropdown-menu .user-info {
+  border-bottom-color: #333333;
+}
+
+.dark .user-menu .dropdown-menu .user-info small {
+  color: #999999;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .site-header {
+    flex-direction: column;
+    padding: 20px;
+  }
+  
+  .site-header .logo {
+    position: static;
+    margin-bottom: 10px;
+  }
+  
+  .site-header .logo img {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .main-menu ul {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .product-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .team-container {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.btn-primary {
+    @apply inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-white transition-all duration-300;
+    background-color: #FF385C;
+}
+.btn-primary:hover {
+    background-color: #e62e4f;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255,56,92,0.4);
+}
+
+.btn-outline {
+    @apply inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all duration-300;
+    background: transparent;
+    color: #FF385C;
+    border: 2px solid #e5e7eb;
+}
+.btn-outline:hover {
+    border-color: #FF385C;
+    transform: translateY(-2px);
+}

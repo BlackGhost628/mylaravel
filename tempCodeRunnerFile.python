@@ -1,0 +1,25 @@
+import sys
+from PyQt5 import QApplication, QLabel, QVBoxLayout, QWidget
+
+# ایجاد برنامه
+app = QApplication(sys.argv)
+
+# ایجاد پنجره اصلی
+window = QWidget()
+window.setWindowTitle("Hello World Program")
+window.setGeometry(100, 100, 300, 200)
+
+# ایجاد لیبل با متن Hello World
+label = QLabel("Hello World")
+label.setStyleSheet("font-size: 20px; color: blue;")
+
+# تنظیم layout
+layout = QVBoxLayout()
+layout.addWidget(label)
+window.setLayout(layout)
+
+# نمایش پنجره
+window.show()
+
+# اجرای برنامه
+sys.exit(app.exec_())
