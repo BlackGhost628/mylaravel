@@ -2,87 +2,62 @@
 
 @section('title', $product->name . ' - FoodEase')
 
-@section('styles')
-<style>
-    .product-detail {
-        display: flex;
-        gap: 40px;
-        flex-wrap: wrap;
-        padding: 20px;
-    }
-    .product-detail img {
-        max-width: 400px;
-        width: 100%;
-        border-radius: 12px;
-        object-fit: cover;
-    }
-    .product-info {
-        flex: 1;
-        min-width: 250px;
-    }
-    .product-info h1 {
-        color: var(--md-sys-color-primary);
-        margin-bottom: 15px;
-    }
-    .product-info .price {
-        font-size: 28px;
-        font-weight: bold;
-        color: var(--md-sys-color-secondary);
-        margin: 20px 0;
-    }
-    .product-info .description {
-        font-size: 16px;
-        line-height: 1.8;
-        margin: 20px 0;
-    }
-    .product-info .category {
-        display: inline-block;
-        background: var(--md-sys-color-primary-container);
-        padding: 5px 15px;
-        border-radius: 20px;
-        font-size: 14px;
-    }
-</style>
-@endsection
-
 @section('content')
-<section class="md-card md-card-elevated" style="max-width:1000px;margin:40px auto;padding:30px;">
-    <div class="product-detail">
-        <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
-        
-        <div class="product-info">
-            <h1>{{ $product->name }}</h1>
-            
-            <div class="category">دسته: 
-                @switch($product->category)
-                    @case('pizza') پیتزا @break
-                    @case('kebab') کباب @break
-                    @case('salad') سالاد @break
-                    @case('pasta') پاستا @break
-                    @default {{ $product->category }}
-                @endswitch
+<div class="max-w-5xl mx-auto py-8">
+
+    <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-6 md:p-8">
+        <div class="flex flex-col md:flex-row gap-8">
+
+            {{-- تصویر --}}
+            <div class="md:w-1/2">
+                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" 
+                     class="w-full rounded-xl object-cover shadow-sm">
             </div>
-            
-            <div class="price">{{ $product->formatted_price }}</div>
-            
-            <div class="description">
-                <strong>توضیحات:</strong>
-                <p>{{ $product->description }}</p>
-            </div>
-            
-            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:20px;">
-                <form action="{{ route('cart.add', $product->id) }}" method="POST">
-                    @csrf
-                    <button type="submit" class="md-btn md-filled md-lg">🛒 افزودن به سبد خرید</button>
-                </form>
-                <a href="{{ route('products') }}" class="md-btn md-outlined md-lg">← بازگشت به منو</a>
-            </div>
-            
-            <div style="margin-top:20px;display:flex;gap:20px;">
-                <span>⭐ امتیاز: {{ $product->rating }}/5</span>
-                <span>❤️ {{ $product->likes }} لایک</span>
+
+            {{-- اطلاعات --}}
+            <div class="md:w-1/2 space-y-4">
+                <h1 class="text-3xl font-bold text-gray-800">{{ $product->name }}</h1>
+
+                <div>
+                    <span class="inline-block bg-gray-100 text-gray-700 px-4 py-1 rounded-full text-sm font-medium">
+                        دسته: 
+                        @switch($product->category)
+                            @case('pizza') 🍕 پیتزا @break
+                            @case('kebab') 🥩 کباب @break
+                            @case('salad') 🥗 سالاد @break
+                            @case('pasta') 🍝 پاستا @break
+                            @default {{ $product->category }}
+                        @endswitch
+                    </span>
+                </div>
+
+                <div class="text-3xl font-bold text-[#FF385C]">
+                    {{ $product->formatted_price }}
+                </div>
+
+                <div class="prose max-w-none text-gray-600 leading-relaxed">
+                    <p class="font-semibold text-gray-700">توضیحات:</p>
+                    <p>{{ $product->description }}</p>
+                </div>
+
+                <div class="flex flex-wrap gap-3 pt-2">
+                    <form action="{{ route('cart.add', $product->id) }}" method="POST">
+                        @csrf
+                        <x-button type="submit" variant="primary" size="lg">
+                            🛒 افزودن به سبد خرید
+                        </x-button>
+                    </form>
+                    <x-button href="{{ route('products') }}" variant="outline" size="lg">
+                        ← بازگشت به منو
+                    </x-button>
+                </div>
+
+                <div class="flex gap-6 text-sm text-gray-500 pt-2 border-t border-gray-100">
+                    <span>⭐ امتیاز: {{ $product->rating }}/5</span>
+                    <span>❤️ {{ $product->likes }} لایک</span>
+                </div>
             </div>
         </div>
     </div>
-</section>
+</div>
 @endsection

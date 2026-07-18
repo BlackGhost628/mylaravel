@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Contact;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache; // ← اضافه شده
 
 class AdminController extends Controller
 {
@@ -62,6 +63,11 @@ class AdminController extends Controller
 
         Product::create($data);
 
+        // ===== پاک کردن کش صفحه اصلی =====
+        Cache::forget('featured_products');
+        Cache::forget('latest_products');
+        Cache::forget('popular_products');
+
         return redirect()->route('admin.products')->with('success', 'محصول با موفقیت اضافه شد!');
     }
 
@@ -99,6 +105,11 @@ class AdminController extends Controller
 
         $product->update($data);
 
+        // ===== پاک کردن کش صفحه اصلی =====
+        Cache::forget('featured_products');
+        Cache::forget('latest_products');
+        Cache::forget('popular_products');
+
         return redirect()->route('admin.products')->with('success', 'محصول با موفقیت بروزرسانی شد!');
     }
 
@@ -111,6 +122,11 @@ class AdminController extends Controller
         }
         
         $product->delete();
+
+        // ===== پاک کردن کش صفحه اصلی =====
+        Cache::forget('featured_products');
+        Cache::forget('latest_products');
+        Cache::forget('popular_products');
 
         return redirect()->route('admin.products')->with('success', 'محصول با موفقیت حذف شد!');
     }

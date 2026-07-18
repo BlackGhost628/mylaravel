@@ -8,8 +8,9 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\CommentController; // ← اضافه شد
-use App\Http\Controllers\Admin\CommentController as AdminCommentController; // ← اضافه شد
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\Admin\CommentController as AdminCommentController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 // ========== صفحه اصلی ==========
@@ -37,6 +38,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
 });
 
+// ========== پیگیری سفارش (عمومی) ==========
+Route::get('/track', [OrderController::class, 'trackForm'])->name('track.form');        // نمایش فرم
+Route::post('/track', [OrderController::class, 'track'])->name('track.search');          // جستجو با کد
+Route::get('/track/{code}', [OrderController::class, 'trackShow'])->name('track.show');  // لینک مستقیم
+
+// ========== پرداخت سفارش (با احراز هویت) ==========
+Route::middleware(['auth'])->group(function () {
+    Route::post('/order/{id}/pay', [OrderController::class, 'pay'])->name('order.pay');
+    Route::post('/order/{id}/pay-fail', [OrderController::class, 'payFail'])->name('order.pay.fail');
+});
+
 // ========== صفحات عمومی ==========
 Route::get('/about', function () { return view('about'); })->name('about');
 Route::get('/team', function () { return view('team'); })->name('team');
@@ -50,11 +62,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// ========== پنل مدیریت (یک گروه واحد) ==========
+// ========== پنل مدیریت ==========
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     // داشبورد
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
-    
+
     // مدیریت محصولات
     Route::get('/products', [AdminController::class, 'products'])->name('products');
     Route::get('/products/create', [AdminController::class, 'createProduct'])->name('products.create');
@@ -62,23 +74,22 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/products/{id}/edit', [AdminController::class, 'editProduct'])->name('products.edit');
     Route::put('/products/{id}', [AdminController::class, 'updateProduct'])->name('products.update');
     Route::delete('/products/{id}', [AdminController::class, 'deleteProduct'])->name('products.delete');
-    
+
     // مدیریت پیام‌ها
     Route::get('/contacts', [AdminController::class, 'contacts'])->name('contacts');
     Route::get('/contacts/{id}', [AdminController::class, 'showContact'])->name('contacts.show');
     Route::delete('/contacts/{id}', [AdminController::class, 'deleteContact'])->name('contacts.delete');
-    
+
     // مدیریت سفارش‌ها
     Route::get('/orders', [OrderController::class, 'adminIndex'])->name('orders');
     Route::get('/orders/{id}', [OrderController::class, 'adminShow'])->name('orders.show');
     Route::post('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
     Route::delete('/orders/{id}', [OrderController::class, 'destroy'])->name('orders.delete');
-    
+
     // مدیریت کاربران
     Route::get('/users', function () { return view('admin.users'); })->name('users');
-    
+
     // ===== مدیریت مقالات =====
-    // توجه: مسیرهای خاص (pending) قبل از مسیرهای عمومی ({id}) قرار می‌گیرند
     Route::get('/articles/pending', [ArticleController::class, 'pending'])->name('articles.pending');
     Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
     Route::get('/articles/create', [ArticleController::class, 'create'])->name('articles.create');
@@ -89,7 +100,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::delete('/articles/{id}', [ArticleController::class, 'destroy'])->name('articles.destroy');
     Route::get('/articles/{id}', [ArticleController::class, 'show'])->name('articles.show');
 
-    // ===== مدیریت نظرات (اضافه شده به گروه ادمین) =====
+    // ===== مدیریت نظرات =====
     Route::get('/comments', [AdminCommentController::class, 'index'])->name('comments.index');
     Route::get('/comments/pending', [AdminCommentController::class, 'pending'])->name('comments.pending');
     Route::patch('/comments/{id}/approve', [AdminCommentController::class, 'approve'])->name('comments.approve');
@@ -100,7 +111,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 Route::get('/articles', [ArticleController::class, 'publicIndex'])->name('articles.public.index');
 Route::get('/articles/{slug}', [ArticleController::class, 'publicShow'])->name('articles.public.show');
 
-// ========== نظرات (عمومی - برای کاربران) ==========
+// ========== جستجوی مقالات (Ajax) ==========
+Route::get('/articles/search', [ArticleController::class, 'search'])->name('articles.search');
+
+// ========== نظرات (عمومی) ==========
 Route::middleware(['auth'])->group(function () {
     Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::delete('/comments/{id}', [CommentController::class, 'destroy'])->name('comments.destroy');
@@ -110,14 +124,8 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth'])
     ->name('dashboard');
-// ========== جستجوی مقالات (Ajax) ==========
-Route::get('/articles/search', [ArticleController::class, 'search'])->name('articles.search');
 
-
-// ========== پیگیری سفارش ==========
-Route::get('/track', [OrderController::class, 'trackForm'])->name('orders.track.form');
-Route::get('/track/search', [OrderController::class, 'track'])->name('orders.track');
-
+// ========== نقشه سایت ==========
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 // ========== احراز هویت ==========

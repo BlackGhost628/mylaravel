@@ -3,70 +3,27 @@
 @section('title', 'ثبت‌نام - FoodEase')
 
 @section('content')
-    <form method="POST" action="{{ route('register') }}" class="auth-form">
-        @csrf
+<form method="POST" action="{{ route('register') }}" class="space-y-4">
+    @csrf
 
-        {{-- نام --}}
-        <div class="form-group">
-            <label for="name">نام کامل</label>
-            <input id="name" type="text" name="name" value="{{ old('name') }}" 
-                   class="form-control @error('name') is-invalid @enderror"
-                   placeholder="علی رضایی" required>
-            @error('name')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
+    <x-input name="name" label="نام کامل" type="text" placeholder="علی رضایی" required />
+    <x-input name="email" label="ایمیل" type="email" placeholder="example@email.com" required />
+    <x-input name="phone" label="شماره تلفن (اختیاری)" type="tel" placeholder="09123456789" />
+    <x-input name="password" label="رمز عبور" type="password" placeholder="حداقل ۸ کاراکتر" required />
+    <x-input name="password_confirmation" label="تکرار رمز عبور" type="password" placeholder="تکرار رمز عبور" required />
 
-        {{-- ایمیل --}}
-        <div class="form-group">
-            <label for="email">ایمیل</label>
-            <input id="email" type="email" name="email" value="{{ old('email') }}" 
-                   class="form-control @error('email') is-invalid @enderror"
-                   placeholder="example@email.com" required>
-            @error('email')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
+    <div class="flex items-center gap-2">
+        <input type="checkbox" name="terms" id="terms" required class="w-4 h-4 accent-[#FF385C]">
+        <label for="terms" class="text-sm text-gray-600 cursor-pointer">قوانین و شرایط سایت را می‌پذیرم</label>
+    </div>
 
-        {{-- تلفن (اختیاری) --}}
-        <div class="form-group">
-            <label for="phone">شماره تلفن (اختیاری)</label>
-            <input id="phone" type="tel" name="phone" value="{{ old('phone') }}" 
-                   class="form-control @error('phone') is-invalid @enderror"
-                   placeholder="09123456789">
-            @error('phone')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
+    <x-button type="submit" variant="primary" size="lg" class="w-full">ثبت‌نام</x-button>
 
-        {{-- رمز عبور --}}
-        <div class="form-group">
-            <label for="password">رمز عبور</label>
-            <input id="password" type="password" name="password" 
-                   class="form-control @error('password') is-invalid @enderror"
-                   placeholder="حداقل ۸ کاراکتر" required>
-            @error('password')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
-
-        {{-- تکرار رمز عبور --}}
-        <div class="form-group">
-            <label for="password_confirmation">تکرار رمز عبور</label>
-            <input id="password_confirmation" type="password" name="password_confirmation" 
-                   class="form-control"
-                   placeholder="تکرار رمز عبور" required>
-        </div>
-
-        {{-- دکمه ثبت‌نام --}}
-        <button type="submit" class="btn-primary">ثبت‌نام</button>
-
-        {{-- لینک‌ها --}}
-        <div class="auth-links">
-            <p>
-                قبلاً حساب دارید؟ 
-                <a href="{{ route('login') }}">ورود</a>
-            </p>
-        </div>
-    </form>
+    <div class="text-center text-sm text-gray-500 mt-4">
+        <p>
+            قبلاً حساب دارید؟
+            <a href="{{ route('login') }}" class="text-[#FF385C] font-semibold hover:underline">ورود</a>
+        </p>
+    </div>
+</form>
 @endsection

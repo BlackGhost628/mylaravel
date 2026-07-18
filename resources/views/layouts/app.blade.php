@@ -3,127 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {{-- متاتگ‌های پیش‌فرض --}}
-@php
-    $defaultTitle = 'FoodEase - سفارش آنلاین غذا';
-    $defaultDescription = 'سفارش آنلاین غذاهای ایرانی و فست‌فود با بهترین قیمت و کیفیت';
-    $defaultKeywords = 'سفارش غذا, آنلاین, پیتزا, کباب, برگر, سوشی';
-    $defaultImage = asset('image/logo.png');
-@endphp
-
-<title>@yield('title', $defaultTitle)</title>
-<meta name="description" content="@yield('description', $defaultDescription)">
-<meta name="keywords" content="@yield('keywords', $defaultKeywords)">
-<meta property="og:title" content="@yield('og_title', $defaultTitle)">
-<meta property="og:description" content="@yield('og_description', $defaultDescription)">
-<meta property="og:image" content="@yield('og_image', $defaultImage)">
-<meta property="og:url" content="{{ url()->current() }}">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="{{ url()->current() }}">
-    
+    <title>@yield('title', 'FoodEase')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="light">
-    <header class="site-header">
-        <div class="logo">
-            <img src="{{ asset('image/logo.png') }}" alt="FoodEase Logo" />
-        </div>
 
-        <nav class="main-menu">
-            <ul>
-                <li><a href="{{ route('home') }}" @if(Route::is('home')) class="active" @endif>صفحه اصلی</a></li>
-                <li><a href="{{ route('products') }}" @if(Route::is('products')) class="active" @endif>منوی غذا</a></li>
-                <li>
-                    <a href="{{ route('cart') }}" @if(Route::is('cart')) class="active" @endif>
+    {{-- ===== استایل‌های تم ===== --}}
+    <style>
+        /* ===== تم روشن ===== */
+        body.light {
+            background-color: #f3f4f6;
+            color: #1f2937;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.light header {
+            background-color: #FF385C;
+        }
+        body.light footer {
+            background-color: #1f2937;
+            color: white;
+        }
+        body.light .bg-white {
+            background-color: #ffffff;
+            color: #1f2937;
+        }
+        body.light .text-gray-800 {
+            color: #1f2937;
+        }
+        body.light .text-gray-500 {
+            color: #6b7280;
+        }
+        body.light .border-gray-200 {
+            border-color: #e5e7eb;
+        }
+        body.light .bg-gray-50 {
+            background-color: #f9fafb;
+        }
+        body.light .shadow-md {
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        /* ===== تم تیره ===== */
+        body.dark {
+            background-color: #0f172a;
+            color: #e2e8f0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark header {
+            background-color: #1e293b !important;
+        }
+        body.dark footer {
+            background-color: #0f172a !important;
+            color: #e2e8f0 !important;
+        }
+        body.dark .bg-white {
+            background-color: #1e293b !important;
+            color: #e2e8f0 !important;
+        }
+        body.dark .text-gray-800 {
+            color: #e2e8f0 !important;
+        }
+        body.dark .text-gray-500 {
+            color: #94a3b8 !important;
+        }
+        body.dark .border-gray-200 {
+            border-color: #334155 !important;
+        }
+        body.dark .bg-gray-50 {
+            background-color: #0f172a !important;
+        }
+        body.dark .shadow-md {
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.5);
+        }
+        body.dark .cart-badge {
+            background-color: #ef4444;
+            color: white;
+        }
+        body.dark .md-btn {
+            background-color: #334155;
+            color: #e2e8f0;
+        }
+    </style>
+</head>
+<body class="light antialiased">
+
+    {{-- ===== HEADER ===== --}}
+    <header class="text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20 md:h-24">
+
+                {{-- لوگو --}}
+                <div class="flex-shrink-0">
+                    <a href="{{ route('home') }}" class="flex items-center">
+                        <img src="{{ asset('image/logo.png') }}" alt="FoodEase Logo" 
+                             class="h-14 w-auto rounded-full border-2 border-white shadow-md">
+                    </a>
+                </div>
+
+                {{-- منوی اصلی --}}
+                <nav class="hidden md:flex items-center space-x-1 rtl:space-x-reverse">
+                    <a href="{{ route('home') }}" class="px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/20 transition @if(Route::is('home')) bg-white/30 @endif">صفحه اصلی</a>
+                    <a href="{{ route('products') }}" class="px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/20 transition @if(Route::is('products')) bg-white/30 @endif">منوی غذا</a>
+                    <a href="{{ route('cart') }}" class="px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/20 transition @if(Route::is('cart')) bg-white/30 @endif relative">
                         🛒 سبد خرید
                         @php
                             $cartCount = 0;
                             $cart = Session::get('cart', []);
-                            foreach ($cart as $item) {
-                                $cartCount += $item['quantity'];
-                            }
+                            foreach ($cart as $item) { $cartCount += $item['quantity']; }
                         @endphp
                         @if($cartCount > 0)
-                            <span class="cart-badge">{{ $cartCount }}</span>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">{{ $cartCount }}</span>
                         @endif
                     </a>
-                </li>
-                <li><a href="{{ route('about') }}" @if(Route::is('about')) class="active" @endif>درباره ما</a></li>
-                <li><a href="{{ route('team') }}" @if(Route::is('team')) class="active" @endif>تیم ما</a></li>
-                <li><a href="{{ route('contact') }}" @if(Route::is('contact')) class="active" @endif>تماس با ما</a></li>
-            </ul>
-        </nav>
+                    <a href="{{ route('about') }}" class="px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/20 transition @if(Route::is('about')) bg-white/30 @endif">درباره ما</a>
+                    <a href="{{ route('team') }}" class="px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/20 transition @if(Route::is('team')) bg-white/30 @endif">تیم ما</a>
+                    <a href="{{ route('contact') }}" class="px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/20 transition @if(Route::is('contact')) bg-white/30 @endif">تماس با ما</a>
+                </nav>
 
-        <div style="display:flex;align-items:center;gap:10px;">
-            @auth
-                <div class="user-menu">
-                    <button class="dropdown-toggle" onclick="toggleDropdown()">👤</button>
-                    <div class="dropdown-menu" id="userDropdown">
-                        <div class="user-info">
-                            <strong>{{ Auth::user()->name }}</strong>
-                            <small>{{ Auth::user()->email }}</small>
+                {{-- دکمه‌های سمت راست --}}
+                <div class="flex items-center gap-4">
+                    @auth
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" class="flex items-center gap-2 bg-white/10 hover:bg-white/20 rounded-full px-4 py-2 text-sm transition">
+                                <span>{{ Auth::user()->name }}</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div x-show="open" @click.away="open = false" class="absolute left-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-xl py-1 z-50 border border-gray-200 dark:border-gray-700">
+                                <div class="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+                                    <strong class="block text-gray-800 dark:text-white">{{ Auth::user()->name }}</strong>
+                                    <small class="text-gray-500 dark:text-gray-400">{{ Auth::user()->email }}</small>
+                                </div>
+                                @if(Auth::user()->is_admin)
+                                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">⚙️ پنل مدیریت</a>
+                                @endif
+                                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">👤 پروفایل</a>
+                                <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">📦 سفارش‌ها</a>
+                                <hr class="my-1 border-gray-200 dark:border-gray-700">
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="block w-full text-right px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700">🚪 خروج</button>
+                                </form>
+                            </div>
                         </div>
-                        
-                        @if(Auth::user()->is_admin)
-                            <a href="{{ route('admin.dashboard') }}">⚙️ پنل مدیریت</a>
-                        @endif
-                        
-                        <a href="{{ route('profile.edit') }}">👤 پروفایل</a>
-                        <a href="{{ route('orders.index') }}">📦 سفارش‌ها</a>
-                        
-                        <div class="divider"></div>
-                        
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit">🚪 خروج</button>
-                        </form>
-                    </div>
-                </div>
-            @else
-                <a href="{{ route('login') }}" class="md-btn md-outlined md-sm" style="color:white;border-color:rgba(255,255,255,0.3);">
-                    ورود
-                </a>
-                <a href="{{ route('register') }}" class="md-btn md-filled md-sm" style="background:rgba(255,255,255,0.2);color:white;">
-                    ثبت‌نام
-                </a>
-            @endauth
+                    @else
+                        <a href="{{ route('login') }}" class="px-5 py-2 rounded-full text-sm font-medium border border-white/40 hover:bg-white/10 transition">ورود</a>
+                        <a href="{{ route('register') }}" class="px-5 py-2 rounded-full text-sm font-medium bg-white/20 hover:bg-white/30 transition">ثبت‌نام</a>
+                    @endauth
 
-            <button id="themeToggle" class="md-btn md-tonal md-sm md-round" style="background:rgba(255,255,255,0.1);color:white;">🌙</button>
+                    {{-- ===== دکمه تغییر تم (با id ثابت) ===== --}}
+                    <button id="themeToggle" class="p-2.5 rounded-full hover:bg-white/10 transition text-xl">
+                        🌙
+                    </button>
+                </div>
+
+                {{-- دکمه منوی موبایل --}}
+                <div class="md:hidden">
+                    <button id="mobileMenuButton" class="p-2 rounded-lg hover:bg-white/10 transition">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {{-- منوی موبایل --}}
+        <div id="mobileMenu" class="md:hidden hidden bg-[#FF385C] px-4 pb-5 pt-2 space-y-1">
+            <a href="{{ route('home') }}" class="block py-2.5 px-3 rounded-xl hover:bg-white/10 transition text-sm font-medium">صفحه اصلی</a>
+            <a href="{{ route('products') }}" class="block py-2.5 px-3 rounded-xl hover:bg-white/10 transition text-sm font-medium">منوی غذا</a>
+            <a href="{{ route('cart') }}" class="block py-2.5 px-3 rounded-xl hover:bg-white/10 transition text-sm font-medium">سبد خرید</a>
+            <a href="{{ route('about') }}" class="block py-2.5 px-3 rounded-xl hover:bg-white/10 transition text-sm font-medium">درباره ما</a>
+            <a href="{{ route('team') }}" class="block py-2.5 px-3 rounded-xl hover:bg-white/10 transition text-sm font-medium">تیم ما</a>
+            <a href="{{ route('contact') }}" class="block py-2.5 px-3 rounded-xl hover:bg-white/10 transition text-sm font-medium">تماس با ما</a>
         </div>
     </header>
 
-    <main style="max-width:1000px;margin:40px auto;padding:35px;">
+    {{-- ===== محتوای اصلی ===== --}}
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         @yield('content')
     </main>
 
-    <footer class="site-footer">
-        <div class="footer-info">
-            <p>© 2025 FoodEase</p>
-            <p>ایران، اصفهان - تلفن: 031-35289966</p>
+    {{-- ===== فوتر ===== --}}
+    <footer class="bg-gray-800 text-white mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
+            <p class="text-lg font-medium">© 2025 FoodEase</p>
+            <p class="text-sm text-gray-400 mt-1">ایران، اصفهان - تلفن: 031-35289966</p>
         </div>
     </footer>
 
+    {{-- ===== اسکریپت‌ها (همه در یک جا) ===== --}}
     <script>
-        function toggleDropdown() {
-            document.getElementById('userDropdown').classList.toggle('show');
-        }
+        // ========== 1. منوی موبایل ==========
+        document.getElementById('mobileMenuButton').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        });
 
-        document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('userDropdown');
-            const toggle = document.querySelector('.dropdown-toggle');
-            if (!toggle?.contains(event.target) && !dropdown?.contains(event.target)) {
-                dropdown?.classList.remove('show');
+        // ========== 2. منوی کاربر (برای Alpine) ==========
+        document.querySelectorAll('[x-data]').forEach(el => {
+            if (el.getAttribute('x-data').includes('open')) {
+                let open = false;
+                const btn = el.querySelector('button');
+                const menu = el.querySelector('[x-show]');
+                if (btn && menu) {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        open = !open;
+                        menu.style.display = open ? 'block' : 'none';
+                    });
+                    document.addEventListener('click', function() {
+                        if (open) {
+                            open = false;
+                            menu.style.display = 'none';
+                        }
+                    });
+                }
             }
         });
 
-        // سیستم تغییر تم
-        document.getElementById('themeToggle').addEventListener('click', function() {
-            document.body.classList.toggle('dark');
-            this.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
-        });
+        // ========== 3. تغییر تم (مهم‌ترین بخش) ==========
+        (function() {
+            // پیدا کردن دکمه
+            var toggleBtn = document.getElementById('themeToggle');
+            if (!toggleBtn) {
+                console.log('دکمه تغییر تم پیدا نشد!');
+                return;
+            }
+
+            var body = document.body;
+
+            // تابع تنظیم تم
+            function setTheme(theme) {
+                if (theme === 'dark') {
+                    body.classList.add('dark');
+                    body.classList.remove('light');
+                    toggleBtn.textContent = '☀️';
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    body.classList.add('light');
+                    body.classList.remove('dark');
+                    toggleBtn.textContent = '🌙';
+                    localStorage.setItem('theme', 'light');
+                }
+                console.log('تم تغییر کرد به: ' + theme);
+            }
+
+            // بارگذاری تم ذخیره شده
+            var savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                setTheme('dark');
+            } else {
+                setTheme('light');
+            }
+
+            // رویداد کلیک روی دکمه
+            toggleBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('دکمه کلیک شد!');
+                if (body.classList.contains('dark')) {
+                    setTheme('light');
+                } else {
+                    setTheme('dark');
+                }
+            });
+
+            console.log('سیستم تغییر تم با موفقیت راه‌اندازی شد!');
+        })();
     </script>
 
-    <script src="{{ asset('js/theme.js') }}"></script>
     @yield('scripts')
 </body>
 </html>

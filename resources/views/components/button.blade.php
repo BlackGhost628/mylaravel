@@ -1,25 +1,35 @@
+@props([
+    'type' => 'button',
+    'variant' => 'primary', // primary, secondary, outline, danger
+    'size' => 'md', // sm, md, lg
+    'href' => null,
+])
+
 @php
+    $baseClasses = 'inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2';
 
-$classes = match($type){
+    $variants = [
+        'primary' => 'bg-[#FF385C] text-white hover:bg-red-600 focus:ring-[#FF385C] shadow-md shadow-red-100',
+        'secondary' => 'bg-gray-200 text-gray-700 hover:bg-gray-300 focus:ring-gray-400',
+        'outline' => 'border-2 border-[#FF385C] text-[#FF385C] hover:bg-[#FF385C] hover:text-white focus:ring-[#FF385C]',
+        'danger' => 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
+    ];
 
-    'primary' => 'bg-blue-500 text-white',
+    $sizes = [
+        'sm' => 'px-4 py-2 text-sm',
+        'md' => 'px-6 py-3 text-base',
+        'lg' => 'px-8 py-4 text-lg',
+    ];
 
-    'success' => 'bg-green-500 text-white',
-
-    'danger' => 'bg-red-500 text-white',
-
-    'warning' => 'bg-yellow-500 text-black',
-
-    default => 'bg-gray-500 text-white'
-};
-
+    $classes = $baseClasses . ' ' . ($variants[$variant] ?? $variants['primary']) . ' ' . ($sizes[$size] ?? $sizes['md']);
 @endphp
 
-<a href="{{ $link }}"
-   class="{{ $classes }} px-5 py-2 rounded-lg">
-
-    {{ $icon }}
-
-    {{ $text }}
-
-</a>
+@if($href)
+    <a href="{{ $href }}" {{ $attributes->merge(['class' => $classes]) }}>
+        {{ $slot }}
+    </a>
+@else
+    <button type="{{ $type }}" {{ $attributes->merge(['class' => $classes]) }}>
+        {{ $slot }}
+    </button>
+@endif

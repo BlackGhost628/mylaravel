@@ -3,32 +3,19 @@
 @section('title', 'بازیابی رمز عبور - FoodEase')
 
 @section('content')
-    <div style="margin-bottom:20px;color:#6b7280;font-size:14px;text-align:center;">
-        رمز عبور خود را فراموش کرده‌اید؟ ایمیل خود را وارد کنید تا لینک بازیابی برای شما ارسال شود.
+<div class="text-center text-sm text-gray-500 mb-4">
+    رمز عبور خود را فراموش کرده‌اید؟ ایمیل خود را وارد کنید تا لینک بازیابی برای شما ارسال شود.
+</div>
+
+<form method="POST" action="{{ route('password.email') }}" class="space-y-4">
+    @csrf
+
+    <x-input name="email" label="ایمیل" type="email" placeholder="example@email.com" required />
+
+    <x-button type="submit" variant="primary" size="lg" class="w-full">ارسال لینک بازیابی</x-button>
+
+    <div class="text-center text-sm text-gray-500 mt-4">
+        <a href="{{ route('login') }}" class="text-[#FF385C] font-semibold hover:underline">← بازگشت به ورود</a>
     </div>
-
-    <form method="POST" action="{{ route('password.email') }}" class="auth-form">
-        @csrf
-
-        {{-- ایمیل --}}
-        <div class="form-group">
-            <label for="email">ایمیل</label>
-            <input id="email" type="email" name="email" value="{{ old('email') }}" 
-                   class="form-control @error('email') is-invalid @enderror"
-                   placeholder="example@email.com" required autofocus>
-            @error('email')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
-
-        {{-- دکمه ارسال --}}
-        <button type="submit" class="btn-primary">ارسال لینک بازیابی</button>
-
-        {{-- لینک بازگشت --}}
-        <div class="auth-links">
-            <p>
-                <a href="{{ route('login') }}">← بازگشت به ورود</a>
-            </p>
-        </div>
-    </form>
+</form>
 @endsection

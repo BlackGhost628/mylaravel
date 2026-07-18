@@ -3,50 +3,28 @@
 @section('title', 'ورود - FoodEase')
 
 @section('content')
-    <form method="POST" action="{{ route('login') }}" class="auth-form">
-        @csrf
+<form method="POST" action="{{ route('login') }}" class="space-y-4">
+    @csrf
 
-        {{-- ایمیل --}}
-        <div class="form-group">
-            <label for="email">ایمیل</label>
-            <input id="email" type="email" name="email" value="{{ old('email') }}" 
-                   class="form-control @error('email') is-invalid @enderror"
-                   placeholder="example@email.com" required autofocus>
-            @error('email')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
+    <x-input name="email" label="ایمیل" type="email" placeholder="example@email.com" required />
+    <x-input name="password" label="رمز عبور" type="password" placeholder="••••••••" required />
 
-        {{-- رمز عبور --}}
-        <div class="form-group">
-            <label for="password">رمز عبور</label>
-            <input id="password" type="password" name="password" 
-                   class="form-control @error('password') is-invalid @enderror"
-                   placeholder="••••••••" required>
-            @error('password')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
+    <div class="flex items-center gap-2">
+        <input type="checkbox" name="remember" id="remember" class="w-4 h-4 accent-[#FF385C]">
+        <label for="remember" class="text-sm text-gray-600 cursor-pointer">مرا به خاطر بسپار</label>
+    </div>
 
-        {{-- مرا به خاطر بسپار --}}
-        <div class="checkbox-group">
-            <input type="checkbox" name="remember" id="remember">
-            <label for="remember">مرا به خاطر بسپار</label>
-        </div>
+    <x-button type="submit" variant="primary" size="lg" class="w-full">ورود</x-button>
 
-        {{-- دکمه ورود --}}
-        <button type="submit" class="btn-primary">ورود</button>
-
-        {{-- لینک‌ها --}}
-        <div class="auth-links">
-            <p>
-                رمز خود را فراموش کردید؟ 
-                <a href="{{ route('password.request') }}">بازیابی رمز</a>
-            </p>
-            <p>
-                حساب ندارید؟ 
-                <a href="{{ route('register') }}">ثبت‌نام کنید</a>
-            </p>
-        </div>
-    </form>
+    <div class="text-center text-sm text-gray-500 space-y-2 mt-4">
+        <p>
+            رمز خود را فراموش کردید؟
+            <a href="{{ route('password.request') }}" class="text-[#FF385C] font-semibold hover:underline">بازیابی رمز</a>
+        </p>
+        <p>
+            حساب ندارید؟
+            <a href="{{ route('register') }}" class="text-[#FF385C] font-semibold hover:underline">ثبت‌نام کنید</a>
+        </p>
+    </div>
+</form>
 @endsection

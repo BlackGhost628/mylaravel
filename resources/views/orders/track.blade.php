@@ -3,83 +3,80 @@
 @section('title', 'پیگیری سفارش - FoodEase')
 
 @section('content')
-<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+<div class="max-w-3xl mx-auto py-8">
 
-    <h1 style="font-size: 28px; font-weight: 700; color: #2D2D2D; text-align: center; margin-bottom: 30px;">🔍 پیگیری سفارش</h1>
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">🔍 پیگیری سفارش</h1>
 
     {{-- فرم جستجو --}}
-    <form method="GET" action="{{ route('orders.track') }}" style="background: #f8f9fa; padding: 25px; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <input type="text" name="tracking_code" value="{{ request('tracking_code') }}"
-                   style="flex: 1; min-width: 200px; padding: 12px 16px; border: 2px solid #e9ecef; border-radius: 10px; font-size: 14px; outline: none; transition: border-color 0.3s;"
-                   placeholder="کد رهگیری را وارد کنید...">
-            <button type="submit"
-                    style="padding: 12px 28px; background: #FF385C; color: white; border: none; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; transition: background 0.3s;">
+    <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-6">
+        <form method="POST" action="{{ route('track.search') }}" class="flex flex-col sm:flex-row gap-3">
+            @csrf
+            <input type="text" name="tracking_code" 
+                   class="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF385C] focus:border-transparent"
+                   placeholder="کد رهگیری خود را وارد کنید..." 
+                   value="{{ request('tracking_code') ?? (isset($order) ? $order->tracking_code : '') }}">
+            <button type="submit" class="px-6 py-3 bg-[#FF385C] hover:bg-red-600 rounded-xl font-bold text-white transition shadow-md shadow-red-100">
                 جستجو
             </button>
-        </div>
-    </form>
+        </form>
+        @error('tracking_code')
+            <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+        @enderror
+    </div>
 
     {{-- نمایش نتیجه --}}
     @if(isset($order))
-        <div style="margin-top: 30px; background: white; border-radius: 16px; border: 1px solid #e9ecef; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #f1f3f5; padding-bottom: 15px; margin-bottom: 20px;">
-                <h2 style="font-size: 20px; font-weight: 700; color: #2D2D2D; margin: 0;">سفارش #{{ $order->order_number }}</h2>
-                <span style="font-size: 14px; color: #6c757d;">{{ $order->created_at->format('Y/m/d H:i') }}</span>
+    <div class="mt-8 bg-white rounded-2xl shadow-md border border-gray-100 p-6">
+        <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+            <div>
+                <h2 class="text-xl font-bold text-gray-800">سفارش #{{ $order->order_number }}</h2>
+                <p class="text-sm text-gray-500">کد رهگیری: {{ $order->tracking_code }}</p>
             </div>
+            <div>
+                <span class="inline-block px-3 py-1 rounded-full text-sm font-bold {{ $order->status_badge }}">
+                    {{ $order->status_persian }}
+                </span>
+            </div>
+        </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-                <div>
-                    <p style="margin: 0 0 4px; font-size: 13px; color: #adb5bd;">کد رهگیری</p>
-                    <p style="margin: 0; font-weight: 700; font-size: 16px; color: #2D2D2D; direction: ltr; text-align: left;">{{ $order->tracking_code }}</p>
+        {{-- وضعیت پرداخت --}}
+        <div class="mt-4">
+            <span class="text-sm text-gray-500">وضعیت پرداخت:</span>
+            <span class="inline-block px-3 py-1 rounded-full text-sm font-bold {{ $order->payment_status_badge }} ml-2">
+                {{ $order->payment_status_persian }}
+            </span>
+        </div>
+
+        <div class="mt-4 grid grid-cols-2 gap-4 text-sm">
+            <div>
+                <span class="text-gray-500">تاریخ ثبت:</span>
+                <span class="font-medium text-gray-700">{{ $order->created_at->format('Y/m/d H:i') }}</span>
+            </div>
+            <div>
+                <span class="text-gray-500">مبلغ کل:</span>
+                <span class="font-bold text-[#FF385C]">{{ number_format($order->total_price) }} تومان</span>
+            </div>
+            <div class="col-span-2">
+                <span class="text-gray-500">آدرس تحویل:</span>
+                <span class="font-medium text-gray-700">{{ $order->address }}</span>
+            </div>
+            <div class="col-span-2">
+                <span class="text-gray-500">تلفن تماس:</span>
+                <span class="font-medium text-gray-700">{{ $order->phone }}</span>
+            </div>
+        </div>
+
+        {{-- دکمه مشاهده جزئیات کامل --}}
+        @auth
+            @if($order->user_id == Auth::id())
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <a href="{{ route('orders.show', $order->id) }}" class="text-[#FF385C] hover:underline font-medium text-sm">
+                        مشاهده جزئیات کامل →
+                    </a>
                 </div>
-                <div>
-                    <p style="margin: 0 0 4px; font-size: 13px; color: #adb5bd;">وضعیت</p>
-                    <span style="display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 14px; font-weight: 600; 
-                        @if($order->status == 'pending') background: #ffc107; color: #000;
-                        @elseif($order->status == 'processing') background: #17a2b8; color: #fff;
-                        @elseif($order->status == 'delivered') background: #28a745; color: #fff;
-                        @elseif($order->status == 'cancelled') background: #dc3545; color: #fff;
-                        @endif">
-                        {{ $order->status_persian ?? $order->status }}
-                    </span>
-                </div>
-            </div>
-
-            <div style="margin-bottom: 20px;">
-                <p style="margin: 0 0 4px; font-size: 13px; color: #adb5bd;">آدرس تحویل</p>
-                <p style="margin: 0; font-size: 14px; color: #495057;">{{ $order->address }}</p>
-            </div>
-
-            <div style="margin-bottom: 20px;">
-                <p style="margin: 0 0 8px; font-size: 13px; color: #adb5bd;">اقلام سفارش</p>
-                <ul style="list-style: none; padding: 0; margin: 0;">
-                    @foreach($order->items as $item)
-                        <li style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f1f3f5; font-size: 14px;">
-                            <span>{{ $item->product->name ?? 'محصول حذف شده' }} ({{ $item->quantity }})</span>
-                            <span>{{ number_format($item->price * $item->quantity) }} تومان</span>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-
-            <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; border-top: 2px solid #f1f3f5; padding-top: 15px;">
-                <span>جمع کل</span>
-                <span style="color: #FF385C;">{{ number_format($order->total_price) }} تومان</span>
-            </div>
-        </div>
-    @elseif(request()->has('tracking_code'))
-        <div style="margin-top: 30px; background: #f8d7da; color: #721c24; padding: 15px 20px; border-radius: 10px; text-align: center;">
-            ❌ کد رهگیری وارد شده معتبر نیست.
-        </div>
-    @else
-        <div style="margin-top: 30px; text-align: center; color: #6c757d;">
-            <p style="font-size: 16px;">کد رهگیری خود را وارد کنید تا وضعیت سفارش را ببینید.</p>
-        </div>
-    @endif
-
-    <div style="margin-top: 25px; text-align: center;">
-        <a href="{{ route('home') }}" style="color: #FF385C; text-decoration: none; font-weight: 600;">← بازگشت به صفحه اصلی</a>
+            @endif
+        @endauth
     </div>
+    @endif
 </div>
 @endsection
