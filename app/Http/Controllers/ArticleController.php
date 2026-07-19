@@ -77,8 +77,13 @@ class ArticleController extends Controller
         return view('admin.articles.edit', compact('article', 'statuses'));
     }
 
-    public function update(Request $request, Article $article)
+    /**
+     * Update the specified article (با findOrFail برای امنیت بیشتر)
+     */
+    public function update(Request $request, $id)
     {
+        $article = Article::findOrFail($id);
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'excerpt' => 'nullable|string',
@@ -89,6 +94,7 @@ class ArticleController extends Controller
             'status' => 'required|in:draft,pending,published',
         ]);
 
+        // مدیریت Slug
         if ($article->title !== $validated['title']) {
             $baseSlug = Str::slug($validated['title']);
             $slug = $baseSlug;
@@ -99,6 +105,7 @@ class ArticleController extends Controller
             $validated['slug'] = $slug;
         }
 
+        // مدیریت تصویر
         if ($request->hasFile('image')) {
             if ($article->image && file_exists(public_path($article->image))) {
                 unlink(public_path($article->image));
@@ -109,6 +116,7 @@ class ArticleController extends Controller
             $validated['image'] = 'images/articles/' . $imageName;
         }
 
+        // مدیریت تاریخ انتشار
         if ($validated['status'] === 'published' && !$article->published_at) {
             $validated['published_at'] = now();
         } elseif ($validated['status'] !== 'published') {
@@ -118,28 +126,40 @@ class ArticleController extends Controller
         $article->update($validated);
 
         return redirect()->route('admin.articles.index')
-            ->with('success', 'مقاله بروزرسانی شد!');
+            ->with('success', 'مقاله با موفقیت بروزرسانی شد!');
     }
 
-    public function publish(Article $article)
+    /**
+     * Publish article (با findOrFail)
+     */
+    public function publish($id)
     {
-        if ($article->status !== 'published') {
-            $article->update([
-                'status' => 'published',
-                'published_at' => now()
-            ]);
-            return redirect()->route('admin.articles.index')
-                ->with('success', 'مقاله منتشر شد!');
+        $article = Article::findOrFail($id);
+
+        if ($article->status === 'published') {
+            return redirect()->back()->with('error', 'این مقاله قبلاً منتشر شده است.');
         }
-        return redirect()->back()->with('error', 'قبلاً منتشر شده است.');
+
+        $article->status = 'published';
+        $article->published_at = now();
+        $article->save();
+
+        return redirect()->route('admin.articles.index')
+            ->with('success', 'مقاله با موفقیت منتشر شد!');
     }
 
-    public function destroy(Article $article)
+    /**
+     * Remove the specified article (با findOrFail)
+     */
+    public function destroy($id)
     {
+        $article = Article::findOrFail($id);
+
         if ($article->image && file_exists(public_path($article->image))) {
             unlink(public_path($article->image));
         }
         $article->delete();
+
         return redirect()->route('admin.articles.index')
             ->with('success', 'مقاله حذف شد!');
     }
@@ -150,7 +170,6 @@ class ArticleController extends Controller
     {
         $query = Article::where('status', 'published');
 
-        // جستجوی متنی
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -160,17 +179,14 @@ class ArticleController extends Controller
             });
         }
 
-        // فیلتر دسته‌بندی
         if ($request->filled('category') && $request->category != 'all') {
             $query->where('category', $request->category);
         }
 
-        // فیلتر نویسنده
         if ($request->filled('author')) {
             $query->where('author', 'like', "%{$request->author}%");
         }
 
-        // مرتب‌سازی
         switch ($request->sort) {
             case 'oldest':
                 $query->orderBy('published_at', 'asc');
@@ -186,7 +202,6 @@ class ArticleController extends Controller
 
         $articles = $query->paginate(9)->withQueryString();
 
-        // دریافت لیست دسته‌بندی‌ها برای فیلتر
         $categories = Article::where('status', 'published')
             ->select('category')
             ->distinct()
@@ -206,7 +221,6 @@ class ArticleController extends Controller
         return view('articles.show', compact('article'));
     }
 
-    // جستجوی Ajax (برای جستجوی زنده)
     public function search(Request $request)
     {
         $query = Article::where('status', 'published');
